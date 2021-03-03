@@ -23,7 +23,10 @@ int CFtpRawTransferOpData::Send()
 		if ((pOldData->binary && controlSocket_.m_lastTypeBinary == 1) ||
 			(!pOldData->binary && controlSocket_.m_lastTypeBinary == 0))
 		{
-			opState = rawtransfer_port_pasv;
+                        if (CServerCapabilities::GetCapability(currentServer_, pret_command) == yes) 
+                                opState = rawtransfer_pret;
+                        else
+                                opState = rawtransfer_port_pasv;
 		}
 		else {
 			opState = rawtransfer_type;
@@ -64,6 +67,9 @@ int CFtpRawTransferOpData::Send()
 		}
 		measureRTT = true;
 		break;
+	case rawtransfer_pret:
+		cmd = L"PRET " + cmd_;
+       		break;
 	case rawtransfer_port_pasv:
 		if (bPasv) {
 			cmd = GetPassiveCommand();
@@ -151,10 +157,19 @@ int CFtpRawTransferOpData::ParseResponse()
 			error = true;
 		}
 		else {
-			opState = rawtransfer_port_pasv;
+			if (bPasv && CServerCapabilities::GetCapability(currentServer_, pret_command) == yes) 
+				opState = rawtransfer_pret;
+			else
+				opState = rawtransfer_port_pasv;
 			controlSocket_.m_lastTypeBinary = pOldData->binary ? 1 : 0;
 		}
 		break;
+		case rawtransfer_pret:
+			if (code != 2 && code != 3)
+				error = true;
+			else
+				opState = rawtransfer_port_pasv;
+			break;
 	case rawtransfer_port_pasv:
 		if (code != 2 && code != 3) {
 			if (!engine_.GetOptions().GetOptionVal(OPTION_ALLOW_TRANSFERMODEFALLBACK)) {

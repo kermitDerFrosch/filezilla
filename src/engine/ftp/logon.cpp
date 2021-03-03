@@ -794,6 +794,9 @@ void CFtpLogonOpData::ParseFeat(std::wstring line)
 	else if (HasFeature(up, L"CLNT")) {
 		CServerCapabilities::SetCapability(currentServer_, clnt_command, yes);
 	}
+	else if (HasFeature(up, L"PRET")) {
+		CServerCapabilities::SetCapability(currentServer_, pret_command, yes);
+	}
 	else if (HasFeature(up, L"MLSD")) {
 		std::wstring facts;
 		// FEAT output for MLST overrides MLSD

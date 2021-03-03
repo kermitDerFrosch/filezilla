@@ -13,7 +13,8 @@ enum rawtransferStates
 	rawtransfer_waitfinish,
 	rawtransfer_waittransferpre,
 	rawtransfer_waittransfer,
-	rawtransfer_waitsocket
+	rawtransfer_waitsocket,
+	rawtransfer_pret
 };
 
 class CFtpRawTransferOpData final : public COpData, public CFtpOpData

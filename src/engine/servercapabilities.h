@@ -44,7 +44,8 @@ enum capabilityNames
 	timezone_offset,
 
 	auth_tls_command,
-	auth_ssl_command
+	auth_ssl_command,
+	pret_command
 };
 
 class CCapabilities final
